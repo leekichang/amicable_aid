@@ -7,38 +7,56 @@ import sklearn.metrics as metrics
 import numpy as np
 import matplotlib.pyplot as plt
 
-class DataManager():
-    def __init__(self, dataset_dir, batch_size):
+class TrainDataManager():
+    def __init__(self, dataset_dir, batch_size, norm):
         self.dataset_dir = dataset_dir
         self.batch_size  = batch_size
+        self.norm        = norm
                 
     def Load_Dataset(self):        
         X_train, Y_train = np.load(self.dataset_dir+'x_train.npy'), np.load(self.dataset_dir+'y_train.npy')
-        X_test,  Y_test  = np.load(self.dataset_dir+'x_test.npy') , np.load(self.dataset_dir+'y_test.npy')
         
-        X_train_max, X_train_min= X_train.max(), X_train.min()
-        X_train = (X_train - X_train_min) / (X_train_max - X_train_min)
-        
-        X_test_max, X_test_min= X_test.max(), X_test.min()
-        X_test  = (X_test - X_test_min) / (X_test_max - X_test_min)
-        
+        if self.norm == True:
+            X_train_max, X_train_min= X_train.max(), X_train.min()
+            X_train = (X_train - X_train_min) / (X_train_max - X_train_min)
+    
         Y_train = np.reshape(Y_train, (-1, 1))            
-        Y_test  = np.reshape(Y_test, (-1, 1))
         
         print(f'The shape of X_TRAIN: {np.shape(X_train)} | The shape of Y_TRAIN: {np.shape(Y_train)}')
+            
+        train_data = Time_Series_dataset(X_train, Y_train)
+    
+        return train_data
+    
+    def Load_DataLoader(self, train):
+        return DataLoader(train, batch_size=self.batch_size, shuffle=True, pin_memory=True, drop_last=True)
+                
+
+class TestDataManager():
+    def __init__(self, dataset_dir, batch_size, norm):
+        self.dataset_dir = dataset_dir
+        self.batch_size  = batch_size
+        self.norm        = norm
+            
+    def Load_Dataset(self):        
+        X_test,  Y_test  = np.load(self.dataset_dir+'x_test.npy') , np.load(self.dataset_dir+'y_test.npy')
+        
+        if self.norm == True:    
+            X_test_max, X_test_min= X_test.max(), X_test.min()
+            X_test  = (X_test - X_test_min) / (X_test_max - X_test_min)
+        
+        Y_test  = np.reshape(Y_test, (-1, 1))
+        
         print(f'The shape of X_TEST : {np.shape(X_test)}  | The shape of Y_TEST : {np.shape(Y_test)}')
         
-        train_data = KETI_dataset(X_train, Y_train)
-        test_data  = KETI_dataset(X_test , Y_test )
+        test_data  = Time_Series_dataset(X_test , Y_test )
 
-        return train_data, test_data
+        return test_data
     
-    def Load_DataLoader(self, train, test):
-        return DataLoader(train, batch_size=self.batch_size, shuffle=True, pin_memory=True, drop_last=True), \
-                DataLoader(test, batch_size=self.batch_size, shuffle=False, pin_memory=True, drop_last=False)
+    def Load_DataLoader(self, test):
+        return DataLoader(test, batch_size=self.batch_size, shuffle=False, pin_memory=True, drop_last=False)
 
-
-class KETI_dataset(Dataset):
+class Time_Series_dataset(Dataset):
     def __init__(self, X, Y):
         self.X = X
         self.Y = Y

@@ -3,7 +3,7 @@ import torch
 import warnings
 warnings.filterwarnings(action='ignore')
 
-BATCH_SIZE      = 64
+BATCH_SIZE      = 256
 LEARNING_RATE   = 0.001
 EPOCH           = 50
 input_size      = 256

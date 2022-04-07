@@ -34,9 +34,9 @@ def parse_args():
 
 args, model_config = parse_args()
 DATASET_DIR                 = f'./dataset/{args.dataset}/'
-DM                          = DataManager(DATASET_DIR, BATCH_SIZE)
-TRAIN_DATA, TEST_DATA       = DM.Load_Dataset()
-TRAIN_LOADER, TEST_LOADER   = DM.Load_DataLoader(TRAIN_DATA, TEST_DATA)
+TRAIN_DM    , TEST_DM       = TrainDataManager(DATASET_DIR, BATCH_SIZE, norm = False), TestDataManager(DATASET_DIR, BATCH_SIZE, norm = False)
+TRAIN_DATA  , TEST_DATA     = TRAIN_DM.Load_Dataset(), TEST_DM.Load_Dataset()
+TRAIN_LOADER, TEST_LOADER   = TRAIN_DM.Load_DataLoader(TRAIN_DATA), TEST_DM.Load_DataLoader(TEST_DATA)
 
 ###############################################################
 
