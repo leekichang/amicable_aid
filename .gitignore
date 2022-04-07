@@ -1,3 +1,9 @@
+dataset/
+saved_models/
+venv/
+references/
+*.zip
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
