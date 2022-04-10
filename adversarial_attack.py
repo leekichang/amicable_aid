@@ -8,6 +8,8 @@ from utils import *
 from config import *
 import argparse
 import sys
+import codecs 
+
 
 def fgsm(signal, epsilon, gradient, aid):
     if epsilon == 0:
@@ -32,6 +34,7 @@ def parse_args():
     args = parser.parse_args()
     return args
 
+sys.stdout = codecs.getwriter('utf-8')(sys.stdout)
 args = parse_args()
 
 DEVICE = 'cuda'
