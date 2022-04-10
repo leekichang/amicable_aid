@@ -24,7 +24,7 @@ def parse_args():
                         choices=['ResNet', 'MaDNN', 'MaCNN'])    
     parser.add_argument('--epochs'    , default = 50    , type = int  )
     parser.add_argument('--lr'        , default = 1e-3  , type = float)
-    parser.add_argument('--batch_size', default = 64    , type = int  )
+    parser.add_argument('--batch_size', default = 256    , type = int  )
     args = parser.parse_args()
 
     model_config = dataset_config[args.dataset]

@@ -29,7 +29,7 @@ file_name = args.model
 dataset   = args.dataset
 
 
-f     = open(f'./results/ResNet/{dataset}_False.txt', encoding='utf-16')
+f     = open(f'./results/{file_name}/{dataset}_False.txt', encoding='utf-8')
 lines = f.readlines()
 data  = []
 
@@ -37,7 +37,7 @@ data  = []
 epsilon, d  = get_data(lines)
 data.append(d)
 
-f     = open(f'./results/ResNet/{dataset}_True.txt', encoding='utf-16')
+f     = open(f'./results/{file_name}/{dataset}_True.txt', encoding='utf-8')
 lines = f.readlines()
 epsilon, d  = get_data(lines)
 data.append(d)
