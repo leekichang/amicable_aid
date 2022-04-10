@@ -1,6 +1,7 @@
 import os
 import torch
 import warnings
+import sys
 warnings.filterwarnings(action='ignore')
 
 BATCH_SIZE      = 256
@@ -8,16 +9,9 @@ LEARNING_RATE   = 0.001
 EPOCH           = 50
 input_size      = 256
 
-save_model_name = "ResNet"
-model_save_path = "./saved_models/" + save_model_name + "/"
-
 USE_CUDA        = torch.cuda.is_available()
 DEVICE          = torch.device("cuda" if USE_CUDA else "cpu")
-print(f"WORKING WITH {DEVICE}")
-
-if not os.path.isdir(model_save_path):
-    os.mkdir(model_save_path)
-    
+print(f"WORKING WITH {DEVICE}", file = sys.stderr)
 
 keti_config       = {'sampling_rate' : 0.1  ,
                      'n_train'       : 11176,
@@ -47,7 +41,16 @@ wifi_config       = {'sampling_rate' : 1000 ,
                      'n_label'       : 7    ,
                      'n_axis'        : 3    }
 
+                     
+pamap2_config     = {'sampling_rate' : 100  ,
+                     'n_train'       : 22794,
+                     'n_test'        : 2000 ,
+                     'n_channel'     : 9    ,
+                     'n_label'       : 7    ,
+                     'n_axis'        : 3    }
+
 dataset_config = {'keti'   : keti_config,
                   'motion' : motion_config,
                   'seizure': seizure_config,
-                  'wifi'   : wifi_config}
+                  'wifi'   : wifi_config,
+                  'PAMAP2' : pamap2_config,}

@@ -10,6 +10,7 @@ from tqdm.notebook import tqdm
 import sklearn.metrics as metrics
 import argparse
 from models.ResNet import *
+from models.mann   import *
 import warnings
 from utils import *
 from config import *
@@ -18,9 +19,9 @@ def parse_args():
     parser = argparse.ArgumentParser(description='train and test')
     
     parser.add_argument('--dataset'   , default = 'keti' , type = str,
-                        choices=['motion', 'seizure', 'wifi', 'keti'])
+                        choices=['motion', 'seizure', 'wifi', 'keti', 'PAMAP2'])
     parser.add_argument('--model'     , default ='ResNet', type = str,
-                        choices=['ResNet'])    
+                        choices=['ResNet', 'MaDNN', 'MaCNN'])    
     parser.add_argument('--epochs'    , default = 50    , type = int  )
     parser.add_argument('--lr'        , default = 1e-3  , type = float)
     parser.add_argument('--batch_size', default = 64    , type = int  )
@@ -38,11 +39,27 @@ TRAIN_DM    , TEST_DM       = TrainDataManager(DATASET_DIR, BATCH_SIZE, norm = F
 TRAIN_DATA  , TEST_DATA     = TRAIN_DM.Load_Dataset(), TEST_DM.Load_Dataset()
 TRAIN_LOADER, TEST_LOADER   = TRAIN_DM.Load_DataLoader(TRAIN_DATA), TEST_DM.Load_DataLoader(TEST_DATA)
 
+save_model_name = args.model
+model_save_path = "./saved_models/" + save_model_name + "/"
+if not os.path.isdir(model_save_path):
+    os.mkdir(model_save_path)
+
 ###############################################################
 
-model = ResNet(input_size = input_size,                      
-               input_channel = model_config['n_channel'],    
-               num_label = model_config['n_label']).to(DEVICE)
+if  args.model == 'ResNet':
+    model = ResNet(input_size    = input_size,                      
+                   input_channel = model_config['n_channel'],    
+                   num_label     = model_config['n_label'  ]).to(DEVICE)
+elif args.model == 'MaCNN':
+    model = MaCNN(input_size    = input_size,
+                  input_channel = model_config['n_channel'],
+                  num_label     = model_config['n_label'  ], 
+                  sensor_num    = int(model_config['n_channel'] / model_config['n_axis'])).to(DEVICE)
+
+elif args.model == 'MaDNN':
+    model = MaDNN(input_size    = input_size,
+                  input_channel = model_config['n_channel'],
+                  num_label     = model_config['n_label'  ]).to(DEVICE)
                
 criterion = nn.CrossEntropyLoss().to(DEVICE)
 optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)

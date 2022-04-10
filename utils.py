@@ -6,6 +6,7 @@ import seaborn as sns
 import sklearn.metrics as metrics
 import numpy as np
 import matplotlib.pyplot as plt
+import sys
 
 class TrainDataManager():
     def __init__(self, dataset_dir, batch_size, norm):
@@ -22,7 +23,7 @@ class TrainDataManager():
     
         Y_train = np.reshape(Y_train, (-1, 1))            
         
-        print(f'The shape of X_TRAIN: {np.shape(X_train)} | The shape of Y_TRAIN: {np.shape(Y_train)}')
+        print(f'The shape of X_TRAIN: {np.shape(X_train)} | The shape of Y_TRAIN: {np.shape(Y_train)}', file=sys.stderr)
             
         train_data = Time_Series_dataset(X_train, Y_train)
     
@@ -47,7 +48,7 @@ class TestDataManager():
         
         Y_test  = np.reshape(Y_test, (-1, 1))
         
-        print(f'The shape of X_TEST : {np.shape(X_test)}  | The shape of Y_TEST : {np.shape(Y_test)}')
+        print(f'The shape of X_TEST : {np.shape(X_test)}  | The shape of Y_TEST : {np.shape(Y_test)}', file=sys.stderr)
         
         test_data  = Time_Series_dataset(X_test , Y_test )
 

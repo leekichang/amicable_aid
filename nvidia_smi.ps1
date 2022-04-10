@@ -1,0 +1,1 @@
+while (1) {cls; nvidia-smi; sleep 1}
