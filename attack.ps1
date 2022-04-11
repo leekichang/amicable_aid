@@ -1,5 +1,7 @@
-$dataset = @('keti')
-$model = @('ResNet', 'MaDNN', 'MaCNN')
+#$dataset = @('motion','keti','wifi','seizure', 'PAMAP2')
+$dataset = @('wifi')
+$model = @('MaCNN', 'RFNet')
+#$model = @('RFNet')
 $aid = @('False', 'True')
 
 foreach ( $d in $dataset )

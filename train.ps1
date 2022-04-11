@@ -1,8 +1,10 @@
 #$dataset = @('motion','keti','wifi','seizure', 'PAMAP2')
-$dataset = @('keti')
+$dataset = @('wifi')
+$model = @('ResNet', 'MaDNN', 'MaCNN', 'LaxCat', 'RFNet')
 foreach ( $d in $dataset )
 {
-
-    echo $d
-    python ./train.py --dataset $d --model ResNet
+    foreach ($m in $model){
+        echo $d
+        python ./train.py --dataset $d --model $m
+    }
 }

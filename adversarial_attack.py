@@ -1,14 +1,16 @@
+# -*- coding: utf-8 -*-
 import os
 import torch
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
 from models.ResNet import *
 from models.mann import *
+from models.laxcat import *
+from models.dual import *
 from utils import *
 from config import *
 import argparse
 import sys
-import codecs 
 
 
 def fgsm(signal, epsilon, gradient, aid):
@@ -28,13 +30,12 @@ def parse_args():
     parser.add_argument('--dataset'   , default = 'keti' , type = str,
                         choices=['motion', 'seizure', 'wifi', 'keti', 'PAMAP2'])
     parser.add_argument('--model'     , default ='ResNet', type = str,
-                        choices=['ResNet', 'MaCNN', 'MaDNN'])
+                        choices=['ResNet', 'MaCNN', 'MaDNN', 'LaxCat', 'RFNet'])
     parser.add_argument('--aid'          , default =True, type = str,
                         choices=['True', 'False'])
     args = parser.parse_args()
     return args
 
-sys.stdout = codecs.getwriter('utf-8')(sys.stdout)
 args = parse_args()
 
 DEVICE = 'cuda'
@@ -44,7 +45,7 @@ save_model_name = args.model
 model_save_path = "./saved_models/" + save_model_name + "/"
 
 model_path = model_save_path if norm == False else model_save_path+'/normalized/'
-model_name = [file for file in os.listdir(model_path) if file.endswith('.pth') and args.dataset in file][0]
+model_name = [file for file in os.listdir(model_path) if file.endswith('.pth') and args.dataset in file][-1]
 
 print(f'Model Name : {model_name}', file=sys.stderr)
 
@@ -68,6 +69,14 @@ elif args.model == 'MaDNN':
     model = MaDNN(input_size    = input_size,
                   input_channel = model_config['n_channel'],
                   num_label     = model_config['n_label'  ]).to(DEVICE)
+elif args.model == 'LaxCat':
+    model = LaxCat(input_size    = input_size,
+                   input_channel = model_config['n_channel'],
+                   num_label     = model_config['n_label'  ]).to(DEVICE)
+elif args.model == 'RFNet':
+    model = RFNet( win_len       = input_size,
+                   input_channel = model_config['n_channel'],
+                   num_classes   = model_config['n_label'  ]).to(DEVICE)
 
 model.load_state_dict(torch.load(model_path+model_name))
 
@@ -102,7 +111,7 @@ for idx, e in enumerate(range(eps+1)):
         
         model.load_state_dict(torch.load(model_path+model_name))
         original_model.load_state_dict(torch.load(model_path+model_name))
-        model.eval()
+        model.train()
         Y_pred_val = model(X_val)
         Y_val      = Y_val.squeeze(-1)
 

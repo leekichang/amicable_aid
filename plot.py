@@ -8,7 +8,7 @@ def parse_args():
     parser.add_argument('--dataset'   , default = 'keti' , type = str,
                         choices=['motion', 'seizure', 'wifi', 'keti', 'PAMAP2'])
     parser.add_argument('--model'     , default ='ResNet', type = str,
-                        choices=['ResNet', 'MaCNN', 'MaDNN'])
+                        choices=['ResNet', 'MaCNN', 'MaDNN', 'LaxCat', 'RFNet'])
     args = parser.parse_args()
     return args
 
@@ -29,7 +29,7 @@ file_name = args.model
 dataset   = args.dataset
 
 
-f     = open(f'./results/{file_name}/{dataset}_False.txt', encoding='utf-8')
+f     = open(f'./results/{file_name}/{dataset}_False.txt', encoding='utf-16le')
 lines = f.readlines()
 data  = []
 
@@ -37,7 +37,7 @@ data  = []
 epsilon, d  = get_data(lines)
 data.append(d)
 
-f     = open(f'./results/{file_name}/{dataset}_True.txt', encoding='utf-8')
+f     = open(f'./results/{file_name}/{dataset}_True.txt', encoding='utf-16le')
 lines = f.readlines()
 epsilon, d  = get_data(lines)
 data.append(d)

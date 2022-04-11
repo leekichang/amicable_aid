@@ -1,5 +1,6 @@
 $dataset = @('motion','keti','wifi','seizure', 'PAMAP2')
-$model = @('MaCNN', 'MaDNN', 'ResNet')
+$model = @('ResNet', 'MaDNN', 'MaCNN', 'LaxCat', 'RFNet')
+# $model = @('RFNet')
 
 foreach ( $d in $dataset )
 {

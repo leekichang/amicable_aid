@@ -11,6 +11,8 @@ import sklearn.metrics as metrics
 import argparse
 from models.ResNet import *
 from models.mann   import *
+from models.laxcat import *
+from models.dual   import *
 import warnings
 from utils import *
 from config import *
@@ -21,7 +23,7 @@ def parse_args():
     parser.add_argument('--dataset'   , default = 'keti' , type = str,
                         choices=['motion', 'seizure', 'wifi', 'keti', 'PAMAP2'])
     parser.add_argument('--model'     , default ='ResNet', type = str,
-                        choices=['ResNet', 'MaDNN', 'MaCNN'])    
+                        choices=['ResNet', 'MaDNN', 'MaCNN', 'LaxCat', 'RFNet'])    
     parser.add_argument('--epochs'    , default = 50    , type = int  )
     parser.add_argument('--lr'        , default = 1e-3  , type = float)
     parser.add_argument('--batch_size', default = 256    , type = int  )
@@ -60,7 +62,14 @@ elif args.model == 'MaDNN':
     model = MaDNN(input_size    = input_size,
                   input_channel = model_config['n_channel'],
                   num_label     = model_config['n_label'  ]).to(DEVICE)
-               
+elif args.model == 'LaxCat':
+    model = LaxCat(input_size    = input_size,
+                   input_channel = model_config['n_channel'],
+                   num_label     = model_config['n_label'  ]).to(DEVICE)
+elif args.model == 'RFNet':
+    model = RFNet( win_len       = input_size,
+                   input_channel = model_config['n_channel'],
+                   num_classes   = model_config['n_label'  ]).to(DEVICE)               
 criterion = nn.CrossEntropyLoss().to(DEVICE)
 optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
 
@@ -127,4 +136,4 @@ get_metrics(pred    = bestResult_pred_np,
             anno    = bestResult_anno_np,
             n_label = model_config['n_label'])
 
-torch.save(bestModel.state_dict(), f'{model_save_path}{args.dataset}_{SOTA_ACC_VAL:.2f}.pth')
+torch.save(bestModel.state_dict(), f'{model_save_path}{args.dataset}_{SOTA_ACC_VAL*100:.2f}.pth')
