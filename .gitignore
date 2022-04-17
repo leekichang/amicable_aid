@@ -2,10 +2,13 @@ dataset/
 saved_models/
 venv/
 references/
+sensor_dependency_check/__pycache__/
+sensor_dependency_check/dataset/
+sensor_dependency_check/saved_models/
 *.zip
 
 # Byte-compiled / optimized / DLL files
-__pycache__/
+
 *.py[cod]
 *$py.class
 

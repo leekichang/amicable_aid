@@ -9,13 +9,10 @@ from torch.utils.data import DataLoader
 from tqdm.notebook import tqdm
 import sklearn.metrics as metrics
 import argparse
-from models.ResNet import *
-from models.mann   import *
-from models.laxcat import *
-from models.dual   import *
 import warnings
 from utils import *
 from config import *
+from models import *
 
 def parse_args():
     parser = argparse.ArgumentParser(description='train and test')
@@ -109,7 +106,7 @@ for epoch in tqdm(enumerate(range(EPOCH)), desc="EPOCHS"):
 
         Y_pred_val_np  = Y_pred_val.to('cpu').detach().numpy()
         Y_pred_val_np  = np.argmax(Y_pred_val_np, axis=1).squeeze()
-        Y_val_np       = Y_val.to('cpu').detach().numpy().reshape(-1, 1).squeeze()     
+        Y_val_np       = Y_val.to('cpu').detach().numpy().reshape(-1, 1)   
         
         Result_pred_val = np.hstack((Result_pred_val, Y_pred_val_np))
         Result_anno_val = np.hstack((Result_anno_val, Y_val_np))
